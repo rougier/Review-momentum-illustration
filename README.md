@@ -1,6 +1,8 @@
 ## README
 
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4063714.svg)](https://doi.org/10.5281/zenodo.4063714)
+
 
 
 This illustration serves to support the argument that structural plasticity may play a crucial functional role.
