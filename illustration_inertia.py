@@ -11,16 +11,18 @@ rseed = 2
 n_iter = 1000
 speed_norm  = 1.00
 accel_norm  = 0.1
-p0 = -50 * np.ones(2)
-target = np.zeros(2)
-v0 = -speed_norm * normalize(np.ones(2))
+p0 = -50 * np.ones(2)                                           # Initial position
+target = np.zeros(2)                                            # Target position
+v0 = -speed_norm * normalize(np.ones(2))                        # Initial velocity
 
 
 
 plt.figure(figsize=(12,3))
 
+## Simulation for each value of initial delay (delay corresponds to velocity application)
 for i,delay in enumerate([0,20,40,60]):
 
+    # Initialisations
     np.random.seed(rseed)
     p, v = p0, v0
     P = [p]
@@ -28,14 +30,21 @@ for i,delay in enumerate([0,20,40,60]):
     for j in range(n_iter):
         a = accel_norm * normalize(np.random.normal(0,1,2))
         v_ = speed_norm * normalize(v + a)
+        
+        # Velocity is updated if new velocity leads to a more favourable result
         if length(p + v_ - target) < length( p + v - target):
             v = v_
+            
+        # Position is displaced w.r.t. velocity only after the period of initial delay
         if j >= delay:
             p = p + v
         P.append(p)
+        
+        # Simulation is stopped when position is close to the target (closeness is arbitrarily fixed) 
         if length(p - target) < 1:
             break;
         
+    # Plotting
     P = np.array(P)
     ax = plt.subplot(1, 4, 1+i, aspect=1)
     ax.set_xlim(-105,25)
@@ -66,6 +75,7 @@ for i,delay in enumerate([0,20,40,60]):
     plt.text(0.01, .99, "Delay %d" % delay, weight="bold",
              va = "top", ha = "left", transform=ax.transAxes)
 
+    # Reward contour
     X, Y = np.meshgrid(np.linspace(-150,50,100),
                        np.linspace(-150,50,100))
     Z = np.sqrt(X**2 + Y**2)
